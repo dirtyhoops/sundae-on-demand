@@ -59,21 +59,14 @@ test('Update toppings subtotal when topping change', async () => {
 });
 
 describe('Grand total', () => {
-  test('Grand total starts at $0.00', () => {
-    render(<OrderEntry />);
-
-    // test that the total starts out at $0.00
-    const grandTotal = screen.getByRole('heading', {
-      name: /grand total: \$/i
-    });
-    expect(grandTotal).toHaveTextContent('0.00');
-  });
-
   test('Grand total updates properly if scoop is added first', async () => {
     render(<OrderEntry />);
     const grandTotal = screen.getByRole('heading', {
       name: /grand total: \$/i
     });
+
+    // check that the grand total starts at $0.00
+    expect(grandTotal).toHaveTextContent('0.00');
 
     // update vanilla scoops to 2 and check grand total
     const vanillaInput = await screen.findByRole('spinbutton', {
@@ -126,7 +119,7 @@ describe('Grand total', () => {
     userEvent.click(cherriesCheckbox);
 
     // update vanilla scoops to 2; grand total should be $5.50 after
-    const vanillaInput = await screen.findByRole('checkbox', {
+    const vanillaInput = await screen.findByRole('spinbutton', {
       name: 'Vanilla'
     });
     userEvent.clear(vanillaInput);
@@ -137,10 +130,10 @@ describe('Grand total', () => {
     userEvent.type(vanillaInput, '1');
 
     // check grand total
-    expect(grandTotal).toHaveAccessibleDescription('3.50');
+    expect(grandTotal).toHaveTextContent('3.50');
 
     //remove cherries toppings and then check grand total
     userEvent.click(cherriesCheckbox);
-    expect(grandTotal).toHaveAccessibleDescription('2.00');
+    expect(grandTotal).toHaveTextContent('2.00');
   });
 });
